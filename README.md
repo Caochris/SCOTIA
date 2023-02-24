@@ -1,6 +1,6 @@
 # dbscan_ot_py
 dbscan_ot_py is a python package for inferring ligand–receptor interactions from spatial imaging data. One example is already included in the notebook.
-This package requires python >=3.6, and the packages listing below:
+This package requires python >=3.6 and the packages listing below:
 
 | Package | Version|
 | ----------- | ----------- |
