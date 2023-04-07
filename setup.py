@@ -19,6 +19,7 @@ setup(
         'scipy',
         'scanpy',
         'statsmodels',
-        'scikit-learn'
+        'scikit-learn',
+        'llvmlite'
     ]
 )
