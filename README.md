@@ -1,7 +1,18 @@
 # dbscan_ot_py
-dbscan_ot_py is a Python package for inferring ligand–receptor interactions from spatial imaging data. One example is already included in the notebook.
+dbscan_ot is a Python package for inferring ligand–receptor interactions from spatial imaging data.
 This package requires Python >=3.6.
-You can install dbscan_ot_py and the required packages with
+Before install dbscan_ot, it is highly recommended to create a new environment using conda.
+```
+conda create -n test_env python=3.9
+conda activate test_env
+```
+In this new conda environment, you can git clone this repository to your worksapce, and then install it with
 ```
 python setup.py install
 ```
+After installation, you can test it by
+```
+python
+import dbscan_ot
+```
+One example about how to use this package was included in the notebook folder.
