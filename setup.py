@@ -4,10 +4,10 @@ import os
 os.environ['BEZIER_NO_EXTENSION'] = 'True'
 
 setup(
-    name='dbscan-ot',
+    name='scotia',
     version='1.0',
-    packages=['dbscan_ot'],
-    package_dir={'dbscan_ot': 'dbscan_ot'},
+    packages=['scotia'],
+    package_dir={'scotia': 'scotia'},
     install_requires=[
         'bezier',
         'forest-fire-clustering',
