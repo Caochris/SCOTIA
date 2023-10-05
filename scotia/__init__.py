@@ -13,17 +13,26 @@ import pickle
 import ot
 import bezier
 
-def bdscan_ff_cell(X, X_index_arr = None, min_cluster_size = 10, eps_l = list(range(15,150,5)), ftem_l = list(range(1,60,1)), ff_sed = 123, unclustered_ratio = 0.2, maxcluster_ratio = 0.8):
+def dbscan_ff_cell(X, X_index_arr = None, min_cluster_size = 10, eps_l = list(range(15,150,5)), ftem_l = list(range(1,60,1)), ff_sed = 123, unclustered_ratio = 0.2, maxcluster_ratio = 0.8):
     """DBSCAN cell clustering
-    Dynamic determination of the eps parameters of DBSCAN by finding the most consistent clustering results between DBSCAN and FFC
+
+    Dynamic determination of the eps parameters of DBSCAN by 
+    finding the most consistent clustering results between DBSCAN and FFC
+
+    ---------------
     Required inputs: X, cell coordinates array
+    ---------------
     Key parameters:
     -X_index_arr: cell index array
     -min_cluster_size: minimum size of clusters identified by DBSCAN
     -eps_l: range of eps to search (DBSCAN)
     -ftem_l: range of fire temperature to search (FFC)
-    -unclustered_ratio: the maximum ratio of unclustered cell to total cells (exclude the cases that most cells are not clustered)
-    -maxcluster_ratio: the maximum ratio of cells belonging to the largest clusters to total cells (exclude the cases that most cells are clustered into the same cluster)
+    -unclustered_ratio: the maximum ratio of unclustered cell to total cells 
+                        (exclude the cases that most cells are not clustered)
+    -maxcluster_ratio: the maximum ratio of cells belonging to the largest clusters to total cells 
+                        (exclude the cases that most cells are clustered into the same cluster)
+    ----------------
+    Returns: cell clusters, final eps used for DBSCAN clustering
     """
     cluster_pos_l = []
     cell_index_l = []
@@ -98,11 +107,19 @@ def bdscan_ff_cell(X, X_index_arr = None, min_cluster_size = 10, eps_l = list(ra
 
 def sel_pot_inter_cluster_pairs(S_all_arr,cluster_cell_df,effect_range=50):
     """select potentially communicating cell cluster pairs (spatially proximal)
+
+    ---------------
     Required inputs:
     -S_all_arr: cell by cell spatial distance array without any filtering
     -cluster_cell_df: cell clustering results
+
+    ---------------
     Key parameters:
-    -effect_range: used for checking whether two cell clusters are spatially proximal to each other, also a normalization factor
+    -effect_range: used for checking whether two cell clusters are spatially proximal 
+                   to each other, also a normalization factor
+    ---------------
+    Returns: filtered cell by cell spatial distance array
+            (filtered cell pairs were marked with Inf)
     """
     S_all_arr_new = np.zeros_like(S_all_arr)
     S_all_arr_new[:] = np.inf
@@ -129,17 +146,25 @@ def sel_pot_inter_cluster_pairs(S_all_arr,cluster_cell_df,effect_range=50):
 
 def source_target_ot(dis_arr, exp_df, meta_df, known_lr_pairs, reg = 1, reg_m = 2, dist_cutoff = 50, min_likeli_cutoff = 0.01):
     """unbalanced ot between source and target cells
+
+    ---------------
     Required inputs:
     -dis_arr: cell by cell spatial distance array (get from function sel_pot_inter_cluster_pairs, Inf for excluded cluster pairs)
     -exp_df: ligand and receptor expression dataframe
     -known_lr_pairs: ligand-receptor pairs
     -meta_df: meata data, including annotation information
+
+    ---------------
     Key parameters:
     -reg: entropy regularization parameter for penalizing one-to-one transport cases
     -reg_m: parameter for relaxing the unbalanced distribution between source and target cells
     -dist_cutoff: distance cutoff for the post-processing of ot results
     -min_likeli_cutoff: likelihood cutoff for the post-processing of ot results
     -effect_range: the normalization factor
+
+    ---------------
+    Returns: cell-cell interaction likelihood dataframe:
+             Columns: source_cell_idx, target_cell_idx, interaction likelihood, LR pair, source_celltype, target_celltype
     """
     ga_df_final = pd.DataFrame([])
     mask = np.where((dis_arr==0)|(np.isnan(dis_arr)==True)|(dis_arr>dist_cutoff))
@@ -211,11 +236,16 @@ def source_target_ot(dis_arr, exp_df, meta_df, known_lr_pairs, reg = 1, reg_m = 
 def post_ot(ot_data_df, label,it_n_label = None):
     """post-processing of ot results by calculating the 
        averaged likelihoods of each LR pair for each cell type pari
+    ---------------
     Required inputs:
     -ot_data: cell-cell interaction likelihood results from ot analysis
     -label: sample_id
+    ---------------
     Optimal inputs:
     -it_n_label: labels for permutation tests
+    ---------------
+    Returns: Summary dataframe for each LR pair for each cell type pair
+             Columns: 'LR|sampleid|sourcecelltype_targetcelltype', averaged_interaction_likelihood
     """
     df_all = {}
     c_t_l = list(set(ot_data_df['cell_pairs']))
@@ -237,13 +267,19 @@ def post_ot(ot_data_df, label,it_n_label = None):
 
 def permutation_test(X_all,it_n=50,random_range=20):
     """permutation test, shuffle expression and randomize cooridnates
+
+    ---------------
     Required inputs:
     -X_all: cell coordinates array
+
+    ---------------
     Key parameters:
     -it_n: the total number of permutations
     -random_range: the range to select a random number for randomization of cell coordinates
-    """
 
+    ---------------
+    Returns: idx dataframe for shuffled expression matrix, randomized cell coordinates
+    """
     shuffle_exp_idx = []
     new_pos = np.array([])
     for it_i in range(it_n):
@@ -264,7 +300,14 @@ def permutation_test(X_all,it_n=50,random_range=20):
 
 def curved_edges(Xs, Xt):
     """calculate curve for LR visualization
-    Xs, Xt are the coordinates array of the source and target cells.
+    ---------------
+    Required inputs:
+    -Xs, the coordinates array of source cells.
+    -Xt, the coordinates array of target cells.
+
+    ---------------
+    Returns: visualization curves indicating the interaction strength
+
     """
     dist_ratio = 0.2
     bezier_precision=20
