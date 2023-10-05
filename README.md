@@ -8,9 +8,9 @@ Before installing scotia, it is highly recommended to create a new environment u
 conda create -n scotia_env python=3.9
 conda activate scotia_env
 ```
-In this new conda environment, you can git clone this repository to your workspace, and then install it with
+In this new conda environment, you can install scotia with
 ```
-python setup.py install
+pip install git+https://github.com/Caochris/SCOTIA.git#egg=scotia
 ```
 After installation, you can test it by
 ```
