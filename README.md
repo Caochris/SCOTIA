@@ -45,7 +45,7 @@ idx_l, eps = cluster_scotia.dbscan_ff_cell(pos_arr)
 
         visualization of the dbscan clusters of the PDAC malignant cells
         <p align="left">
-            <img src="dbscan_mal_result.png" width="200">
+            <img src="images/dbscan_mal_result.png" width="200">
         </p>
 
     2) eps: final eps used for DBSCAN clustering.
