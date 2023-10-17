@@ -34,21 +34,21 @@ idx_l, eps = cluster_scotia.dbscan_ff_cell(pos_arr)
   -eps_l: the list of maximum distance between neighboring cells within each cluster, default searching range from 15 to 150 with step size of 5.
 
 - Returns: 
-    1) idx_l: list of cell clusters. using `pd.DataFrame({'cluster':range(len(idx_l)),'cell_idx':idx_l})`
+1) idx_l: list of cell clusters. using `pd.DataFrame({'cluster':range(len(idx_l)),'cell_idx':idx_l})`
 
-        you will see:
-        | cluster    | cell_idx |
-        | -------- | ------- |
-        | 0  | [19, 26, 40, 42, 54, 55, 61, 69, 70, 73, 74, 8...    |
-        | 1 | [208, 255, 267, 271, 286]    |
-        | ... | ... |
+    you will see:
+    | cluster    | cell_idx |
+    | -------- | ------- |
+    | 0  | [19, 26, 40, 42, 54, 55, 61, 69, 70, 73, 74, 8...    |
+    | 1 | [208, 255, 267, 271, 286]    |
+    | ... | ... |
 
-        visualization of the dbscan clusters of the PDAC malignant cells
-        <p align="left">
-            <img src="images/dbscan_mal_result.png" width="200">
-        </p>
+    visualization of the dbscan clusters of the PDAC malignant cells
+    <p align="left">
+        <img src="images/dbscan_mal_result.png" width="200">
+    </p>
 
-    2) eps: final eps used for DBSCAN clustering.
+2) eps: final eps used for DBSCAN clustering.
 
 
 
