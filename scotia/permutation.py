@@ -16,7 +16,7 @@ def permutation_test(X_all,it_n=50,random_range=20):
     -random_range: the range to select a random number for randomization of cell coordinates
 
     ---------------
-    Returns: idx dataframe for shuffled expression matrix, randomized cell coordinates
+    Returns: randomized cell coordinates, idx dataframe for shuffled expression matrix
     """
     shuffle_exp_idx = []
     new_pos = np.array([])

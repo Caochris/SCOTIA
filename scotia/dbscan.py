@@ -5,18 +5,20 @@ from forest_fire_clustering.forest_fire_clustering import FFC
 from sklearn.metrics.cluster import adjusted_rand_score
 from scipy.spatial import distance_matrix
 from collections import Counter
+import warnings
+warnings.filterwarnings("ignore")
 
-def dbscan_ff_cell(X, X_index_arr = None, min_cluster_size = 10, eps_l = list(range(15,150,5)), ftem_l = list(range(1,60,1)), ff_sed = 123, unclustered_ratio = 0.2, maxcluster_ratio = 0.8):
+def dbscan_ff_cell(X, X_index_arr, min_cluster_size = 10, eps_l = list(range(15,150,5)), ftem_l = list(range(1,60,1)), ff_sed = 123, unclustered_ratio = 0.2, maxcluster_ratio = 0.8):
     """DBSCAN cell clustering
 
-    Dynamic determination of the eps parameters of DBSCAN by 
-    finding the most consistent clustering results between DBSCAN and FFC
+    Dynamic determination of the eps parameter of DBSCAN by 
+    finding the most consistent clustering results between DBSCAN and Foreset Fire clustering (FFC)
 
     ---------------
-    Required inputs: X, cell coordinates array
+    Required inputs: X, cell coordinates array (2D)
+                     X_index_arr, cell index/label array (1D) 
     ---------------
-    Key parameters:
-    -X_index_arr: cell index array
+    Parameters:
     -min_cluster_size: minimum size of clusters identified by DBSCAN
     -eps_l: range of eps to search (DBSCAN)
     -ftem_l: range of fire temperature to search (FFC)
@@ -25,12 +27,15 @@ def dbscan_ff_cell(X, X_index_arr = None, min_cluster_size = 10, eps_l = list(ra
     -maxcluster_ratio: the maximum ratio of cells belonging to the largest clusters to total cells 
                         (exclude the cases that most cells are clustered into the same cluster)
     ----------------
-    Returns: cell clusters, final eps used for DBSCAN clustering
+    Returns: list of cell clusters, final eps used for DBSCAN clustering
+    ----------------
+    Examples:
+    idx_l, eps = cluster_scotia.dbscan_ff_cell(pos_arr)
+
     """
-    cluster_pos_l = []
-    cell_index_l = []
     fi_eps = None
-    
+    cell_index_l = []
+
     #run dbscan
     db_label_l = []
     for eps in eps_l:
@@ -89,11 +94,7 @@ def dbscan_ff_cell(X, X_index_arr = None, min_cluster_size = 10, eps_l = list(ra
         for l in labels_unique:
             my_members = labels == l
             if l >-1 and X[my_members, :].shape[0]>=min_cluster_size:
-                cluster_pos_l.append(X[my_members, :])
-                if X_index_arr.any():
-                    cell_index_l.append(X_index_arr[my_members])
+                cell_index_l.append(X_index_arr[my_members])
         
-    if X_index_arr.any(): 
-        return cluster_pos_l, cell_index_l, fi_eps
-    else:
-        return cluster_pos_l, fi_eps
+    return cell_index_l, fi_eps
+   
