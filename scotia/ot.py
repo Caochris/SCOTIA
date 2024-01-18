@@ -20,6 +20,32 @@ def sel_pot_inter_cluster_pairs(S_all_arr,cluster_cell_df,effect_range=50):
     ---------------
     Returns: modified cell by cell spatial distance array
             (filtered cell pairs were marked with Inf)
+    ---------------
+    Example:
+    >>> import numpy as np
+    >>> import pandas as pd
+    >>> from scipy.spatial import distance_matrix
+    >>> pos_arr = np.array(pd.read_csv('/your_work_space/input_files/position.csv',index_col=0))
+    >>> S_all_arr = distance_matrix(pos_arr,pos_arr)
+    >>> S_all_arr.shape
+    (30, 30)
+    >>> idx_l, eps = scotia.dbscan_ff_cell(pos_arr,np.array(range(pos_arr.shape[0])),min_cluster_size=5,eps_l = list(range(10,50,1)))
+    >>> cluster_df = pd.DataFrame({'cell_type':['ct1' for x in idx_l],'cell_idx':idx_l})
+    >>> S_all_arr_new = scotia.sel_pot_inter_cluster_pairs(S_all_arr,cluster_df)
+    >>> S_all_arr_new
+    array([[         inf,          inf,          inf,          inf,
+         70.07854413,          inf,          inf,          inf,
+                 inf, 102.63195903, 101.12106266,  97.50784028,
+        106.7732175 , 115.75837214,          inf, 101.47270525,
+         77.79698085, 101.47743597, 103.99309253,  91.14154319,
+         88.15106414,  98.74700056, 108.44534667, 102.67525679,
+        136.89309892, 127.66252526, 139.17861155,          inf,
+                 inf,          inf],
+       [         inf,          inf,          inf,          inf,
+         50.56664489,          inf,          inf,          inf,
+         ....]
+    >>> S_all_arr_new.shape
+    (30, 30)
     """
     S_all_arr_new = np.zeros_like(S_all_arr)
     S_all_arr_new[:] = np.inf
@@ -65,6 +91,36 @@ def source_target_ot(dis_arr, exp_df, meta_df, known_lr_pairs, reg = 1, reg_m = 
     ---------------
     Returns: cell-cell interaction likelihood dataframe:
              Columns: source_cell_idx, target_cell_idx, interaction likelihood, LR pair, source_celltype, target_celltype
+
+    ---------------
+    Example:
+    >>> import numpy as np
+    >>> import pandas as pd
+    ### load known lr pairs
+    >>> known_lr_pairs = pd.read_csv('/your_work_space/input_files/known_lr_pairs.csv',index_col=0)
+    ### load distance matrix
+    >>> S_all_arr_new = np.load('/your_work_space/input_files/S_all_arr_new.npy',allow_pickle=True)
+    ### load expression matrix
+    >>> exp_df = pd.read_csv('/your_work_space/input_files/normed_exp_mtx.csv',index_col=0)
+    ### load annotation
+    >>> meta_df = pd.read_csv('/your_work_space/input_files/metadata.csv',index_col=0)
+    >>> ot_results = scotia.source_target_ot(S_all_arr_new, exp_df, meta_df, known_lr_pairs)
+    >>> ot_results
+        l_id  r_id  likelihood_norm     lr_pairs      l_anno        r_anno
+    1      25    15         0.132332   Angpt1_Tek   Erythroid           SEC
+    7      25    52         0.018806   Angpt1_Tek   Erythroid  Erythroidpro
+    48     26    59         0.019965   Angpt1_Tek  Hepatocyte           SEC
+    51     26    64         0.105244   Angpt1_Tek  Hepatocyte           SEC
+    80     31     3         0.011669   Angpt1_Tek         SEC  Erythroidpro
+    ..    ...   ...              ...          ...         ...           ...
+    801   290   251         0.035588  Dll1_Notch2   Erythroid  Erythroidpro
+    802   290   256         0.092262  Dll1_Notch2   Erythroid  Erythroidpro
+    803   290   259         0.298707  Dll1_Notch2   Erythroid  Erythroidpro
+    804   290   271         0.053638  Dll1_Notch2   Erythroid    Hepatocyte
+    805   290   288         0.137968  Dll1_Notch2   Erythroid  Erythroidpro
+
+    [2709 rows x 6 columns]
+
     """
     ga_df_final = pd.DataFrame([])
     mask = np.where((dis_arr==0)|(np.isnan(dis_arr)==True)|(dis_arr>dist_cutoff))
@@ -146,6 +202,26 @@ def post_ot(ot_data_df, label,it_n_label = None):
     ---------------
     Returns: Summary dataframe for each LR pair for each cell type pair
              Columns: 'LR|sampleid|sourcecelltype_targetcelltype', averaged_interaction_likelihood
+    ---------------
+    Example:
+    >>> import numpy as np
+    >>> import pandas as pd
+    >>> ot_results =  pd.read_csv('/your_work_space/input_files/ot_results.csv',index_col=0)
+    >>> ot_summary_df = scotia.post_ot(ot_results,label='test')
+                                             label  ave_likelihood
+    0        Kitl_Kit|test|Hepatocyte_Erythroidpro        0.144833
+    1     Dll1_Notch2|test|Hepatocyte_Erythroidpro        0.119500
+    2      Angpt2_Tek|test|Hepatocyte_Erythroidpro        0.054068
+    3      Dll4_Notch2|test|Erythroidpro_Erythroid        0.062231
+    4      Jag2_Notch1|test|Erythroidpro_Erythroid        0.060846
+    ..                                         ...             ...
+    95           Jag1_Notch1|test|SEC_Erythroidpro        0.154537
+    96             Jag2_Notch2|test|SEC_Hepatocyte        0.051343
+    97             Efnb2_Ephb4|test|SEC_Hepatocyte        0.121378
+    98  Jag1_Notch2|test|Erythroidpro_Erythroidpro        0.043519
+    99   Angpt2_Tek|test|Erythroidpro_Erythroidpro        0.030334
+
+    [100 rows x 2 columns]
     """
     df_all = {}
     c_t_l = list(set(ot_data_df['cell_pairs']))

@@ -21,11 +21,15 @@ import scotia
 # Main functions
 ## DBSCAN cell clustering
 ```
-idx_l, eps = cluster_scotia.dbscan_ff_cell(pos_arr)
+idx_l, eps = scotia.dbscan_ff_cell(X, X_index_arr)
 ```
 **This function is to dynamically determine the eps parameter of DBSCAN clustering by finding the most consistent clustering results between DBSCAN and Foreset Fire clustering (FFC).**
 
-- Required inputs: pos_arr, cell coordinates array (2D array, x and y).
+- Required inputs: 
+
+  X, cell coordinates array (2D array, x and y).
+
+  X_index_arr, cell index (label) array (1D).
 
 - Key parameters:
 
@@ -34,7 +38,7 @@ idx_l, eps = cluster_scotia.dbscan_ff_cell(pos_arr)
   -eps_l: the list of maximum distance between neighboring cells within each cluster, default searching range from 15 to 150 with step size of 5.
 
 - Returns: 
-1) idx_l: list of cell clusters. using `pd.DataFrame({'cluster':range(len(idx_l)),'cell_idx':idx_l})`
+1) idx_l: list of cell clusters. Using `pd.DataFrame({'cluster':range(len(idx_l)),'cell_idx':idx_l})`
 
     you will see:
     | cluster    | cell_idx |
@@ -42,13 +46,12 @@ idx_l, eps = cluster_scotia.dbscan_ff_cell(pos_arr)
     | 0  | [19, 26, 40, 42, 54, 55, 61, 69, 70, 73, 74, 8...    |
     | 1 | [208, 255, 267, 271, 286]    |
     | ... | ... |
+2) eps: final eps used for DBSCAN clustering.
 
-    visualization of the dbscan clusters of the PDAC malignant cells
+    Visualization of the dbscan clusters of the PDAC malignant cells. Colors indicate cell clusters.
     <p align="left">
         <img src="images/dbscan_mal_result.png" width="200">
     </p>
-
-2) eps: final eps used for DBSCAN clustering.
 
 
 
@@ -56,11 +59,11 @@ idx_l, eps = cluster_scotia.dbscan_ff_cell(pos_arr)
 **This function is for selecting potentially communicating cluster pairs (spatially proximal). Filtered cell pairs will be marked with Inf in the distance matrix.**
 
 ```
-dis_mtx_mod = scotia.sel_pot_inter_cluster_pairs(dis_arr,cluster_cell_df)
+dis_mtx_mod = scotia.sel_pot_inter_cluster_pairs(S_all_arr,cluster_cell_df)
 ```
 - Required inputs: 
 
-  dis_arr: cell by cell spatial distance array (NxN, N is the number of cells).
+  S_all_arr: cell by cell spatial distance array (NxN, N is the number of cells).
 
   cluster_cell_df: data frame of the dbscan clustering results.
 
@@ -81,13 +84,14 @@ dis_mtx_mod = scotia.sel_pot_inter_cluster_pairs(dis_arr,cluster_cell_df)
 ## OT transport
 **This function is for inferring cell by cell interaction likelihood between source and target cells using unbalanced optimal transport algorithm.**
 ```
-inter_likely_df = scotia.source_target_ot(dis_mtx_mod, exp_df, meta_df, known_lr_pairs)
+inter_likely_df = scotia.source_target_ot(dis_arr, exp_df, meta_df, known_lr_pairs)
 ```
+
 - Required inputs:
 
-1) dis_mtx_mod: cell by cell spatial distance array (get from function `sel_pot_inter_cluster_pairs`).
+1) dis_arr: cell by cell spatial distance array (get from function `sel_pot_inter_cluster_pairs`).
     
-2) exp_df:  gene expression dataframe.
+2) exp_df: gene expression dataframe.
 
     | cell_id    | fov | gene1 | gene2 | gene3|...|
     | -------- | ------- | ------- | ------- | ------- |------- |
@@ -116,7 +120,7 @@ inter_likely_df = scotia.source_target_ot(dis_mtx_mod, exp_df, meta_df, known_lr
 
 - Returns: inter_likely_df, cell-cell interaction likelihood dataframe.
 
-    | source_cell_idx    | target_cell_idx | interaction likelihood | LR pair | source_celltype|target_celltype|
+    | source_cell_idx | receptor_cell_idx | likelihood | ligand_recptor | source_cell_type |target_cell_type|
     | -------- | ------- | ------- | ------- | ------- | ------- |
     | 21 | 22 |0.041|Angpt1_Tek|MK|Erythroid|
     | 40 | 22 |0.029|Angpt1_Tek|MK|Erythroid|
@@ -125,11 +129,11 @@ inter_likely_df = scotia.source_target_ot(dis_mtx_mod, exp_df, meta_df, known_lr
 ## Summarize OT results
 **This function is for post-processing of ot results by calculating the averaged likelihoods of each LR pair for each cell type pair.***
 ```
-scotia.post_ot(inter_likely_df, label)
+scotia.post_ot(ot_data_df, label)
 ```
 - Required inputs:
 
-    inter_likely_df: cell-cell interaction scores from `source_target_ot` function.
+    ot_data_df: cell-cell interaction scores from `source_target_ot` function.
 
     label: sample_id for output.
 - Returns: Summary data frame for each LR pair for each cell type pair.
@@ -142,9 +146,9 @@ scotia.post_ot(inter_likely_df, label)
 ## Permutation test
 **This function is for permutation test: shuffle expression and randomize coordinates.**
 ```
-coordiantes_df, exp_idx = scotia.permutation_test(pos_arr)
+coordiantes_df, exp_idx = scotia.permutation_test(X_all)
 ```
-- Required inputs: pos_arr, cell coordinates array (2D array, x and y).
+- Required inputs: X_all, cell coordinates array (2D array, x and y).
 
 - Key parameters:
 
