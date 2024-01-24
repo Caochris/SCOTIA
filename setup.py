@@ -20,6 +20,7 @@ setup(
         'scanpy',
         'statsmodels',
         'scikit-learn',
-        'llvmlite'
+        'llvmlite',
+        'xdoctest'
     ]
 )

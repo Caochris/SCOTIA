@@ -30,10 +30,8 @@ def dbscan_ff_cell(X, X_index_arr, min_cluster_size = 10, eps_l = list(range(15,
     Returns: list of cell clusters, final eps used for DBSCAN clustering
     ----------------
     Example:
-    >>> import numpy as np
-    >>> import pandas as pd
-    >>> pos_arr = np.array(pd.read_csv('/your_work_space/input_files/position.csv',index_col=0))
-    >>> idx_l, eps = scotia.dbscan_ff_cell(pos_arr,np.array(range(pos_arr.shape[0])),min_cluster_size=5,eps_l = list(range(10,50,1)))
+    >>> pos_arr = np.array(pd.read_csv('./input_files/position.csv',index_col=0))
+    >>> idx_l, eps = dbscan_ff_cell(pos_arr,np.array(range(pos_arr.shape[0])),min_cluster_size=5,eps_l = list(range(10,50,1)))
     >>> idx_l
     [array([ 0,  1,  2,  3,  5,  6,  7,  8, 14]), 
     array([ 4,  9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26])]
