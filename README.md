@@ -174,5 +174,15 @@ coordiantes_df, exp_idx = scotia.permutation_test(X_all)
 # Usage/Example
 Check out this [notebook](https://github.com/Caochris/SCOTIA/blob/master/notebook/scotia_example.ipynb) for more tutorial. The example data used in the tutorial were included in the [example](https://github.com/Caochris/SCOTIA/tree/master/example) folder.
 
+# Running tests
+Tests are written as doctests examples. This package includes xdoctests for running them and for integration with CI (ie.pytest). To run the tests, install xdoctests: 
+```
+pip install xdoctests pygments
+```
+then navigate to repo and run the command:
+```
+python -m xdoctest scotia/
+```
+
 # Citation
 Shiau, C., Cao, J., Gregory, M. T., Gong, D., Yin, X., Cho, J. W., Wang, P. L., Su, J., Wang, S., Reeves, J. W., Kim, T. K., Kim, Y., Guo, J. A., Lester, N. A., Schurman, N., Barth, J. L., Weissleder, R., Jacks, T., Qadan, M., Hong, T. S., … Hwang, W. L. (2023). Therapy-associated remodeling of pancreatic cancer revealed by single-cell spatial transcriptomics and optimal transport analysis. bioRxiv : the preprint server for biology, 2023.06.28.546848. [Link](https://doi.org/10.1101/2023.06.28.546848)
