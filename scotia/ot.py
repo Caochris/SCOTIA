@@ -172,16 +172,10 @@ def post_ot(ot_data_df, label,it_n_label = None):
     Example:
     # doctest: +NORMALIZE_WHITESPACE
     >>> ot_results =  pd.read_csv('./input_files/ot_results.csv',index_col=0)
-<<<<<<< HEAD
     >>> df_sum = post_ot(ot_results,label='test')
     >>> df_sum.sort_values(by=['ave_likelihood'], ascending=False).head(1)
                                 label  ave_likelihood
     35  Dll1_Notch1|test|Erythroid_SEC        0.229103
-=======
-    >>> post_ot(ot_results,label='test').head(1) 
-                                        label  ave_likelihood
-    0  Dll4_Notch2|test|Erythroid_Erythroidpro        0.098149
->>>>>>> 14427b87f2537914bb3bb81c557681b827497577
     """
     df_all = {}
     c_t_l = list(set(ot_data_df['cell_pairs']))
