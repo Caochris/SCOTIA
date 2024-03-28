@@ -4,9 +4,9 @@ from scipy.spatial import distance_matrix
 import ot
 from .dbscan import dbscan_ff_cell
 
-def sel_pot_inter_cluster_pairs(S_all_arr,cluster_cell_df,effect_range=50):
+def sel_pot_inter_cluster_pairs(S_all_arr,cluster_cell_df,dist_cutoff=50):
     """select potentially communicating cell pairs (spatially proximal)
-       filtering out cell pair that exceed the effect range
+       filtering out cell pair that exceed the distance cutoff
 
     ---------------
     Required inputs:
@@ -15,8 +15,10 @@ def sel_pot_inter_cluster_pairs(S_all_arr,cluster_cell_df,effect_range=50):
 
     ---------------
     Key parameters:
-    -effect_range: used for checking whether two cell clusters are spatially proximal 
-                   to each other, also a normalization factor
+    -dist_cutoff: used for checking whether two cell clusters are spatially proximal 
+                  to each other. If the closest two cell pair from the source and 
+                  target clusters exceeds this distance cutoff,then those two clusters
+                  are not proximal enough.
     ---------------
     Returns: modified cell by cell spatial distance array
             (filtered cell pairs were marked with Inf)
@@ -49,8 +51,8 @@ def sel_pot_inter_cluster_pairs(S_all_arr,cluster_cell_df,effect_range=50):
 
                         dis_mtx = S_all_arr[l_cell_ids_index,:][:,r_cell_ids_index]
                         #make sure cell clusters are spatially proximal to each other
-                        #(at least one cell-cell pair that is within the effect_range distance)
-                        mask_close = np.where(dis_mtx<=effect_range)
+                        #(at least one cell-cell pair that is within the dist_cutoff)
+                        mask_close = np.where(dis_mtx<=dist_cutoff)
                         if dis_mtx[mask_close].shape[0] >= 1:
                             #print(l_cell_type,r_cell_type)
                             S_all_arr_new[l_cell_ids_index[:,None], r_cell_ids_index] = S_all_arr[l_cell_ids_index[:,None], r_cell_ids_index]
@@ -72,7 +74,6 @@ def source_target_ot(dis_arr, exp_df, meta_df, known_lr_pairs, reg = 1, reg_m = 
     -reg_m: parameter for relaxing the unbalanced distribution between source and target cells
     -dist_cutoff: distance cutoff for the post-processing of ot results
     -min_likeli_cutoff: likelihood cutoff for the post-processing of ot results
-    -effect_range: the normalization factor
 
     ---------------
     Returns: cell-cell interaction likelihood dataframe:

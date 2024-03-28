@@ -8,7 +8,7 @@ from collections import Counter
 import warnings
 warnings.filterwarnings("ignore")
 
-def dbscan_ff_cell(X, X_index_arr, min_cluster_size = 10, eps_l = list(range(15,150,5)), ftem_l = list(range(1,60,1)), ff_sed = 123, unclustered_ratio = 0.2, maxcluster_ratio = 0.8):
+def dbscan_ff_cell(X, X_index_arr, min_cluster_size = 10, eps_range = list(range(10,150,5)), ftem_l = list(range(1,60,1)), ff_sed = 123, unclustered_ratio = 0.2, maxcluster_ratio = 0.8):
     """DBSCAN cell clustering
 
     Dynamic determination of the eps parameter of DBSCAN by 
@@ -20,7 +20,7 @@ def dbscan_ff_cell(X, X_index_arr, min_cluster_size = 10, eps_l = list(range(15,
     ---------------
     Parameters:
     -min_cluster_size: minimum size of clusters identified by DBSCAN
-    -eps_l: range of eps to search (DBSCAN)
+    -eps_range: range of eps to search (DBSCAN)
     -ftem_l: range of fire temperature to search (FFC)
     -unclustered_ratio: the maximum ratio of unclustered cell to total cells 
                         (exclude the cases that most cells are not clustered)
@@ -31,7 +31,7 @@ def dbscan_ff_cell(X, X_index_arr, min_cluster_size = 10, eps_l = list(range(15,
     ----------------
     Example:
     >>> pos_arr = np.array(pd.read_csv('./input_files/position.csv',index_col=0))
-    >>> idx_l, eps = dbscan_ff_cell(pos_arr,np.array(range(pos_arr.shape[0])),min_cluster_size=5,eps_l = list(range(10,50,1)))
+    >>> idx_l, eps = dbscan_ff_cell(pos_arr,np.array(range(pos_arr.shape[0])),min_cluster_size=5,eps_range = list(range(10,50,1)))
     >>> idx_l
     [array([ 0,  1,  2,  3,  5,  6,  7,  8, 14]), 
     array([ 4,  9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26])]
@@ -44,7 +44,7 @@ def dbscan_ff_cell(X, X_index_arr, min_cluster_size = 10, eps_l = list(range(15,
 
     #run dbscan
     db_label_l = []
-    for eps in eps_l:
+    for eps in eps_range:
         dbscan_tmp = DBSCAN(eps=eps).fit(X)
         db_label_l.append(dbscan_tmp.labels_)
         
@@ -64,7 +64,7 @@ def dbscan_ff_cell(X, X_index_arr, min_cluster_size = 10, eps_l = list(range(15,
     score_t1 = {}
     score_t2 = {}
     score_t3 = {}
-    for eps,label_db in zip(eps_l,db_label_l):
+    for eps,label_db in zip(eps_range,db_label_l):
         score_t1[str(eps)]=0
         score_t2[str(eps)]=0
         score_t3[str(eps)]=0
@@ -95,7 +95,7 @@ def dbscan_ff_cell(X, X_index_arr, min_cluster_size = 10, eps_l = list(range(15,
       
     if fi_eps:
         print('eps: '+str(fi_eps))
-        labels = db_label_l[eps_l.index(fi_eps)]
+        labels = db_label_l[eps_range.index(fi_eps)]
         labels_unique = np.unique(labels)
         for l in labels_unique:
             my_members = labels == l
