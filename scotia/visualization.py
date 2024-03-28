@@ -17,17 +17,14 @@ def curved_edges(Xs, Xt):
     Returns: visualization curves indicating the interaction strength
     ---------------
     Example:
-    >>> pos_df = pd.read_csv('/your_work_space/input_files/interaction_cell_pos.csv/', index_col=0)
+    >>> pos_df = pd.read_csv('./input_files/interaction_cell_pos.csv', index_col=0)
     >>> source_pos = np.array(pos_df.iloc[:,:2])
     >>> target_pos = np.array(pos_df.iloc[:,2:])
-    >>> all_curves = scotia.curved_edges(source_pos,target_pos)
+    >>> all_curves = curved_edges(source_pos,target_pos)
     >>> all_curves.shape
     (58, 20, 2)
-    >>> all_curves
-    array([[[ 39.79069128,  97.23202316],
-            [ 40.3113594 ,  95.98706166],
-            [ 41.03223928,  94.75115404],
-            ...,
+    >>> all_curves[:1,:1,:]
+    array([[[39.79069128, 97.23202316]]])
     """
     dist_ratio = 0.2
     bezier_precision=20
