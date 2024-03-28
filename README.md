@@ -35,7 +35,7 @@ idx_l, eps = scotia.dbscan_ff_cell(X, X_index_arr)
 
   -min_cluster_size: the minimum number of cells in the clusters identified by DBSCAN, default: 10.
   
-  -eps_l: the list of maximum distance between neighboring cells within each cluster, default searching range from 15 to 150 with step size of 5.
+  -eps_range: the list of maximum distance between neighboring cells within each cluster, default searching range from 10 to 150 with step size of 5
 
 - Returns: 
 1) idx_l: list of cell clusters. Using `pd.DataFrame({'cluster':range(len(idx_l)),'cell_idx':idx_l})`
@@ -76,8 +76,10 @@ dis_mtx_mod = scotia.sel_pot_inter_cluster_pairs(S_all_arr,cluster_cell_df)
 
 - Key parameters:
 
-  -effect_range: used for checking whether two cell clusters are spatially proximal 
-                   to each other, also a normalization factor.
+  -dist_cutoff: used for checking whether two cell clusters are spatially proximal 
+                to each other. If the closest two cell pair from the source and 
+                target clusters exceeds this distance cutoff,then those two clusters
+                are not proximal enough.
     
 - Returns: dis_mtx_mod, modified cell by cell spatial distance array with filtered cell pairs marked with 'Inf'.
 
