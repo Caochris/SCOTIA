@@ -28,7 +28,7 @@ def sel_pot_inter_cluster_pairs(S_all_arr,cluster_cell_df,dist_cutoff=50):
     >>> S_all_arr = distance_matrix(pos_arr,pos_arr)
     >>> S_all_arr.shape
     (30, 30)
-    >>> idx_l, eps = dbscan_ff_cell(pos_arr,np.array(range(pos_arr.shape[0])),min_cluster_size=5,eps_l = list(range(10,50,1)))
+    >>> idx_l, eps = dbscan_ff_cell(pos_arr,np.array(range(pos_arr.shape[0])),min_cluster_size=5,eps_range = list(range(10,50,1)))
     >>> cluster_df = pd.DataFrame({'cell_type':['ct1' for x in idx_l],'cell_idx':idx_l})
     >>> S_all_arr_new = sel_pot_inter_cluster_pairs(S_all_arr,cluster_df)
     >>> S_all_arr_new
@@ -174,9 +174,11 @@ def post_ot(ot_data_df, label,it_n_label = None):
     # doctest: +NORMALIZE_WHITESPACE
     >>> ot_results =  pd.read_csv('./input_files/ot_results.csv',index_col=0)
     >>> df_sum = post_ot(ot_results,label='test')
+    >>> df_sum = df_sum.set_index('label')
     >>> df_sum.sort_values(by=['ave_likelihood'], ascending=False).head(1)
-                                label  ave_likelihood
-    35  Dll1_Notch1|test|Erythroid_SEC        0.229103
+                                    ave_likelihood
+    label
+    Dll1_Notch1|test|Erythroid_SEC        0.229103
     """
     df_all = {}
     c_t_l = list(set(ot_data_df['cell_pairs']))
