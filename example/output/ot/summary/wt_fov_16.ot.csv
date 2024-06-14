@@ -1,6 +1,6 @@
 label	ave_likelihood
-Dll4_Notch2|wt|Erythroid_Hepatocyte	0.13688176556397907
-Efnb2_Ephb4|wt|Erythroid_Hepatocyte	0.07038933452671679
-Jag2_Notch2|wt|Erythroid_Hepatocyte	0.13634479742571012
-Jag2_Notch2|wt|Erythroid_Macrophage	0.07649796073092952
-Dll4_Notch2|wt|SEC_Erythroid	0.16039128988204313
+Jag2_Notch2|wt|Erythroid_Macrophage	0.07649796849153774
+Dll4_Notch2|wt|SEC_Erythroid	0.16039132980090656
+Jag2_Notch2|wt|Erythroid_Hepatocyte	0.13634481689830494
+Efnb2_Ephb4|wt|Erythroid_Hepatocyte	0.0703893350317551
+Dll4_Notch2|wt|Erythroid_Hepatocyte	0.13688179561920447
