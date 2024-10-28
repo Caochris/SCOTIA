@@ -93,7 +93,7 @@ def run_dbscan(fov_data, celltype_col, mcell, sr):
         coords = cells[['x_pos', 'y_pos']].values
         if coords.shape[0] >= mcell:
             idx_list, _ = dbscan_ff_cell(coords, X_index_arr=np.arange(len(cells)),
-                            min_cluster_size=mcell, eps_l = sr)
+                            min_cluster_size=mcell, eps_range = sr)
             if idx_list:
                 celltype += [cell_type for x in idx_list]
                 cell_idx += idx_list
