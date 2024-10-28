@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import anndata as ad
 from .dbscan import dbscan_ff_cell
+from scipy.spatial import distance_matrix
 from .ot import sel_pot_inter_cluster_pairs, source_target_ot, post_ot
 import os
 
