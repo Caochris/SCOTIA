@@ -1,5 +1,5 @@
 # Scotia
-Spatially Constrained Optimal Transport Interaction Analysis (SCOTIA) is a Python package for inferring cell-cell interactions from imaging-based spatial omics data. The main idea of the method is to use an optimal transport model with a cost function that includes both spatial distance and ligand–receptor gene expression. The three key steps of the method are: (1) spatial clustering to identify adjacent source and target cluster pairs, (2) scoring of candidate cell-cell interactions by solving an optimal transport problem between spatially proximal source and target cluster, and (3) significance assessment of the resulting spatially-constrained cell-cell interaction scores through permutation.
+Spatially Constrained Optimal Transport Interaction Analysis (SCOTIA) is a Python package for inferring cell-cell interactions from imaging-based spatial omics data. The main idea of the method is to use an optimal transport model with a cost function that includes both spatial distance and ligand–receptor gene expression. The three key steps of the method are: (1) spatial clustering to identify adjacent source and target cluster pairs, (2) scoring candidate cell-cell interactions by solving an optimal transport problem between spatially proximal source and target cluster, and (3) assessing the significance of the resulting spatially-constrained cell-cell interaction scores through permutation.
 
 # Installation
 This package requires Python >=3.6.
@@ -17,7 +17,44 @@ After installation, you can test it by
 python
 import scotia
 ```
+# Quick start
+```
+scotia.run_scotia.lr_score(adata, lr_list, sample_col, fov_col, celltype_col, output_path)
+```
+**This single function takes [anndata](https://anndata.readthedocs.io/en/latest/) as input and returns ligand-receptor interactions between cells.**
 
+- Required inputs: 
+
+  adata, AnnData object with spatial data in adata.obsm['spatial'].
+  
+  lr_list: DataFrame/array of ligand-receptor pairs with 2 columns.
+
+  sample_col: Sample column name in adata.obs.
+
+  fov_col: FOV column name in adata.obs.
+
+  celltype_col: Cell type column name in adata.obs.
+
+  output_path: Output directory path.
+
+- Returns: 
+
+    Cell-cell interaction likelihood dataframe
+
+    | source_cell_idx | receptor_cell_idx | likelihood | ligand_recptor | source_cell_type |target_cell_type|
+    | -------- | ------- | ------- | ------- | ------- | ------- |
+    | 21 | 22 |0.041|Angpt1_Tek|MK|Erythroid|
+    | 40 | 22 |0.029|Angpt1_Tek|MK|Erythroid|
+    | ... | ... |...|...|...|...|
+
+    Summary dataframe
+    | label    | ave_likelihood | 
+    | -------- | ------- | 
+    | Kitl_Kit_wt_Hepatocyte_Erythroidpro| 0.267|
+    | Dll4_Notch2_wt_Erythroid_Hepatocyte| 0.187|
+    | ... | ... |
+
+For more information check out this [tutorial](https://github.com/Caochris/SCOTIA/blob/master/notebook/scotia_example_anndata.ipynb).
 # Main functions
 ## DBSCAN cell clustering
 ```
@@ -83,7 +120,7 @@ dis_mtx_mod = scotia.sel_pot_inter_cluster_pairs(S_all_arr,cluster_cell_df)
     
 - Returns: dis_mtx_mod, modified cell by cell spatial distance array with filtered cell pairs marked with 'Inf'.
 
-## OT transport
+## Optimal transport
 **This function is for inferring cell by cell interaction likelihood between source and target cells using unbalanced optimal transport algorithm.**
 ```
 inter_likely_df = scotia.source_target_ot(dis_arr, exp_df, meta_df, known_lr_pairs)
@@ -174,7 +211,7 @@ coordiantes_df, exp_idx = scotia.permutation_test(X_all)
     | 175 | 257 | 134 | 220 | ...|
     
 # Usage/Example
-Check out this [notebook](https://github.com/Caochris/SCOTIA/blob/master/notebook/scotia_example.ipynb) for more tutorial. The example data used in the tutorial were included in the [example](https://github.com/Caochris/SCOTIA/tree/master/example) folder.
+Check out the [notebook](https://github.com/Caochris/SCOTIA/blob/master/notebook/) folder for more tutorial. The example data used in the tutorialss were included in the [example](https://github.com/Caochris/SCOTIA/tree/master/example) folder.
 
 # Running tests
 Tests are written as doctests examples. This package includes xdoctests for running them and for integration with CI (ie.pytest). To run the tests, install xdoctests: 
