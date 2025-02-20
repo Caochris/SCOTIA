@@ -55,7 +55,7 @@ def lr_score(adata, lr_list, sample_col, fov_col, celltype_col, output_path):
 
     for sample_id in set(adata.obs[sample_col]):
         adata_sample = adata.obs[adata.obs[sample_col]==sample_id]
-        for fov in set(adata.obs[fov_col]):
+        for fov in set(adata_sample[fov_col]):
             
             adata_fov = adata_sample[adata_sample[fov_col]==fov]
             adata_fov['index'] = range(adata_fov.shape[0])
