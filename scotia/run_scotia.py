@@ -36,8 +36,10 @@ def lr_score(adata, lr_list, sample_col, fov_col, celltype_col, output_path):
     # Convert lr_list to DataFrame if needed
     if isinstance(lr_list, np.ndarray) and lr_list.shape[1] == 2:
         lr_list = pd.DataFrame(lr_list, columns=['l_gene', 'r_gene'])
-    elif not isinstance(lr_list, pd.DataFrame) or lr_list.shape[1] != 2:
-        raise ValueError("lr_list must have exactly 2 columns")
+    elif isinstance(lr_list, pd.DataFrame) and lr_list.shape[1] == 2:
+        lr_list.columns = ['l_gene','r_gene']
+    else:
+        raise ValueError("lr_list must have exactly 2 columns, e.g., l_gene, r_gene")
 
     # Add spatial coordinates to obs
     adata.obs['x_pos'] = adata.obsm['spatial'][:, 0]
