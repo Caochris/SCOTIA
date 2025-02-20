@@ -42,8 +42,8 @@ def lr_score(adata, lr_list, sample_col, fov_col, celltype_col, output_path):
         raise ValueError("lr_list must have exactly 2 columns, e.g., l_gene, r_gene")
 
     # Add spatial coordinates to obs
-    adata.obs['x_pos'] = adata.obsm['spatial'][:, 0]
-    adata.obs['y_pos'] = adata.obsm['spatial'][:, 1]
+    adata.obs['x_pos'] = adata.obsm['spatial'][:, 0].copy()
+    adata.obs['y_pos'] = adata.obsm['spatial'][:, 1].copy()
     adata.obs['annotation'] = adata.obs[celltype_col]
 
     # Create output directories
