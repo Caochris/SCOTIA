@@ -25,7 +25,7 @@ scotia.run_scotia.lr_score(adata, lr_list, sample_col, fov_col, celltype_col, ou
 
 - Required inputs: 
 
-  adata, AnnData object with spatial data in adata.obsm['spatial'], coordinates in um.
+  adata, AnnData object with spatial coordinates stored in adata.obsm['spatial'] and coordinates in microns.
   
   lr_list: DataFrame/array of ligand-receptor pairs with 2 columns.
 
