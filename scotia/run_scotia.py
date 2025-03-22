@@ -76,9 +76,11 @@ def lr_score(adata, lr_list, sample_col, fov_col, celltype_col, output_path, sel
     
     if len(sel_sample_id)>0:
         adata_sel = adata[adata.obs[sample_col].isin(sel_sample_id)]
-    if len(sel_fov_id)>0:
-        adata_sel = adata_sel[adata_sel.obs[fov_col].isin(sel_fov_id)]
-
+        if len(sel_fov_id)>0:
+            adata_sel = adata_sel[adata_sel.obs[fov_col].isin(sel_fov_id)]
+    else:
+         adata_sel = adata.copy()
+        
     for sample_id in set(adata_sel.obs[sample_col]):
         adata_sample = adata_sel[adata_sel.obs[sample_col]==sample_id]
         for fov in set(adata_sample.obs[fov_col]):
